@@ -21,12 +21,26 @@ const getAllUserFromDB = async (): Promise<IUser[]> => {
 };
 
 /**
- * Get single user json from DB
+ * Get single user json from DB using ID
  * @param id user id
  * @returns Promise user data or null
  */
-const getSingleUserFromDB = async (id: string): Promise<IUser | null> => {
+const getSingleUserFromDBById = async (id: string): Promise<IUser | null> => {
     const result = await UserModel.findById({ _id: id });
+    return result;
+}
+
+/**
+ * Get single user json from DB using Email
+ * @param id user id
+ * @returns Promise user data or null
+ */
+const getSingleUserFromDBByEmail = async (email: string): Promise<IUser[] | null> => {
+    const result = await UserModel.aggregate([
+        {
+            $match: { email: email }
+        }
+    ])
     return result;
 }
 
@@ -37,13 +51,14 @@ const getSingleUserFromDB = async (id: string): Promise<IUser | null> => {
  * @returns Promise updated data or null
  */
 const updateUserInDB = async (id: string, updatedData: IUser): Promise<IUser | null> => {
-    const result = await UserModel.findByIdAndUpdate(id, updatedData);
+    const result = await UserModel.findByIdAndUpdate(id, updatedData, { runValidators: true });
     return result
 }
 
 export const UserService = {
     createUserIntoDB,
     getAllUserFromDB,
-    getSingleUserFromDB,
+    getSingleUserFromDBById,
+    getSingleUserFromDBByEmail,
     updateUserInDB
 };
