@@ -11,5 +11,7 @@ export interface IUser {
     phone?: string,
     photo?: string,
     gender: 'male' | 'female' | 'other',
-    dateOfBarth: string
+    dateOfBarth: string,
+    role: 'admin' | 'user',
+    isActive: boolean
 }
