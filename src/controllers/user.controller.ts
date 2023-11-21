@@ -50,14 +50,38 @@ const getAllUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 /**
- * Controller for getting single user from DB
+ * Controller for getting single user from DB using ID
  * @param req API Request
  * @param res API Response
  */
-const getSingleUser = async (req: Request, res: Response): Promise<void> => {
+const getSingleUserId = async (req: Request, res: Response): Promise<void> => {
     try {
         const id = req.params.id;
-        const result = await UserService.getSingleUserFromDB(id);
+        const result = await UserService.getSingleUserFromDBById(id);
+
+        res.status(200).json({
+            status: 'success',
+            massage: 'Find single user successfully',
+            doc: result
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({
+            status: 'failed',
+            massage: error
+        });
+    }
+};
+
+/**
+ * Controller for getting single user from DB using Email
+ * @param req API Request
+ * @param res API Response
+ */
+const getSingleUserEmail = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const email = req.params.email;
+        const result = await UserService.getSingleUserFromDBByEmail(email);
 
         res.status(200).json({
             status: 'success',
@@ -101,6 +125,7 @@ const updateSingleUser = async (req: Request, res: Response): Promise<void> => {
 export const UserController = {
     createUser,
     getAllUser,
-    getSingleUser,
+    getSingleUserId,
+    getSingleUserEmail,
     updateSingleUser
 };

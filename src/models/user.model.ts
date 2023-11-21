@@ -1,17 +1,26 @@
 import { Schema, model } from "mongoose";
 import { IUser, IUserName } from "../interfaces/user.interface";
+import { isEmail, isCharacterString } from "../utils/validation";
 
 // user name schema
 const userNameSchema = new Schema<IUserName>({
     firstName: {
         type: String,
         required: [true, 'User first name is required'],
-        trim: true
+        trim: true,
+        validate: {
+            validator: (v: string) => isCharacterString(v),
+            message: 'only string and no empty string'
+        }
     },
     lastName: {
         type: String,
         required: [true, 'User last name is required'],
-        trim: true
+        trim: true,
+        validate: {
+            validator: (v: string) => isCharacterString(v),
+            message: 'only string and no empty string'
+        }
     }
 })
 
@@ -22,7 +31,11 @@ const userSchema = new Schema<IUser>({
         type: String,
         required: [true, 'User email is required'],
         unique: true,
-        trim: true
+        trim: true,
+        validate: {
+            validator: (v: string) => isEmail(v),
+            message: value => `${value.value} is not a valid Email`
+        }
     },
     dateOfBarth: {
         type: String,
