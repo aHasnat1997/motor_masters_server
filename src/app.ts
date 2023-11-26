@@ -1,7 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import path from 'path';
-import { UserRoute } from './routes/user.route';
+import { AppRoutes } from './route';
 
 // cerate an app using express
 const app: Application = express();
@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 // api routes
-app.use('/api/v1/user', UserRoute);
+app.use('/api/v1', AppRoutes);
 
 // home route
 app.get('/', (req: Request, res: Response) => {
