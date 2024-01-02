@@ -13,7 +13,8 @@ const createUserIntoDB = async (data: IUser) => {
 
     const jwtPayload = {
         email: result.email,
-        phone: result.phone
+        phone: result.phone,
+        role: result.role
     }
     const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn: config.jwt_access_expires_in })
     const refreshToken = jwt.sign(jwtPayload, config.jwt_refresh_secret as string, { expiresIn: config.jwt_refresh_expires_in })
