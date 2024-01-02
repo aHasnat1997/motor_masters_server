@@ -8,10 +8,11 @@ export interface IUserName {
 export interface IUser {
     name: IUserName,
     email: string,
-    phone?: string,
+    phone: string,
     photo?: string,
     gender: 'male' | 'female' | 'other',
     dateOfBarth: string,
     role: 'admin' | 'user',
-    isActive: boolean
+    isActive?: boolean,
+    isDeleted?: boolean
 }

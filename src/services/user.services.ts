@@ -1,14 +1,29 @@
+import jwt from "jsonwebtoken";
 import { IUser } from "../interfaces/user.interface";
 import { UserModel } from "../models/user.model";
+import config from "../config";
 
 /**
  * Create single user in DB
  * @param data user json data
  * @returns Promise user json data
  */
-const createUserIntoDB = async (data: IUser): Promise<IUser> => {
+const createUserIntoDB = async (data: IUser) => {
     const result = await UserModel.create(data)
-    return result;
+
+    const jwtPayload = {
+        email: result.email,
+        phone: result.phone,
+        role: result.role
+    }
+    const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn: config.jwt_access_expires_in })
+    const refreshToken = jwt.sign(jwtPayload, config.jwt_refresh_secret as string, { expiresIn: config.jwt_refresh_expires_in })
+
+    return {
+        result,
+        accessToken,
+        refreshToken
+    };
 };
 
 /**

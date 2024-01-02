@@ -11,10 +11,13 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
         const data = req.body;
         const result = await UserService.createUserIntoDB(data);
 
+        res.cookie('refreshToken', result.refreshToken, { httpOnly: true });
+        res.cookie('accessToken', result.accessToken, { httpOnly: true });
+
         res.status(200).json({
             status: 'success',
             massage: 'User created successfully',
-            doc: result
+            doc: result.result
         });
     } catch (error) {
         console.log(error);
