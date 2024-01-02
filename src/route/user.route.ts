@@ -5,8 +5,8 @@ import { UserController } from "../controllers/user.controller";
 export const UserRoutes = express.Router();
 
 
-// POST route for creating user in DB
-UserRoutes.post('/', UserController.createUser);
+// POST route for creating user and sing-in in DB
+UserRoutes.post('/sing-in', UserController.createUser);
 
 // GET route for all user from DB
 UserRoutes.get('/', UserController.getAllUser);

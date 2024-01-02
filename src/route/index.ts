@@ -12,7 +12,7 @@ interface TRoute {
 }
 const routes: TRoute[] = [
     {
-        path: '/users',
+        path: '/users/auth',
         route: UserRoutes
     }
 ];

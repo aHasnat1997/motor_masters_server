@@ -51,7 +51,12 @@ const userSchema = new Schema<IUser>({
         required: [true, 'User gender is required']
     },
     photo: { type: String, trim: true },
-    phone: { type: String, trim: true },
+    phone: {
+        type: String,
+        required: [true, 'User phone is required'],
+        unique: true,
+        trim: true
+    },
     role: {
         type: String,
         enum: {
@@ -62,8 +67,11 @@ const userSchema = new Schema<IUser>({
     },
     isActive: {
         type: Boolean,
-        required: true,
         default: true
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
     }
 })
 
