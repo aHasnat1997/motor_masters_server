@@ -4,7 +4,7 @@ import { UserModel } from "../models/user.model";
 import config from "../config";
 
 /**
- * Create single user in DB
+ * Create and Single user in DB
  * @param data user json data
  * @returns Promise user json data
  */

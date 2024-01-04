@@ -8,6 +8,7 @@ export interface IUserName {
 export interface IUser {
     name: IUserName,
     email: string,
+    password: string,
     phone: string,
     photo?: string,
     gender: 'male' | 'female' | 'other',
@@ -15,4 +16,9 @@ export interface IUser {
     role: 'admin' | 'user',
     isActive?: boolean,
     isDeleted?: boolean
+}
+
+export interface IUserLogIn {
+    email: string,
+    password: string
 }
