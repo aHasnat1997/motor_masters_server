@@ -24,6 +24,7 @@ export interface IUserMethods extends Model<IUser> {
     userPasswordMatch(plainPass: string, hashedPass: string): boolean
 }
 
+// to-do: make auth module for user; 
 export interface IUserLogIn {
     email: string,
     password: string
