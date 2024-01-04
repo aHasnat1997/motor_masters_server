@@ -40,7 +40,7 @@ const logInUser = async (req: Request, res: Response): Promise<void> => {
         res.status(200).json({
             status: 'success',
             massage: 'User log-in successfully',
-            doc: result.userData
+            doc: result?.userData
         });
     } catch (error) {
         console.log(error);
