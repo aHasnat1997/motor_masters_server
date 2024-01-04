@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { IUser } from "../interfaces/user.interface";
+import { IUser, IUserLogIn } from "../interfaces/user.interface";
 import { UserModel } from "../models/user.model";
 import config from "../config";
 
@@ -8,23 +8,39 @@ import config from "../config";
  * @param data user json data
  * @returns Promise user json data
  */
-const createUserIntoDB = async (data: IUser) => {
-    const result = await UserModel.create(data)
+const createUserIntoDB = async (payload: IUser) => {
+    const result = await UserModel.create(payload)
+    return result;
+};
+
+/**
+ * user log in service
+ * @param payload user email and password
+ * @returns user data access and refresh token
+ */
+const userLogInService = async (payload: IUserLogIn) => {
+    const userData = await UserModel.findOne({ email: payload?.email });
+
+    if (!userData) {
+        throw new Error('No user found');
+    } else if (!(await UserModel.userPasswordMatch(payload.password, userData.password))) {
+        throw new Error('password not matched');
+    }
 
     const jwtPayload = {
-        email: result.email,
-        phone: result.phone,
-        role: result.role
+        email: userData.email,
+        phone: userData.phone,
+        role: userData.role
     }
-    const accessToken = jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn: config.jwt_access_expires_in })
-    const refreshToken = jwt.sign(jwtPayload, config.jwt_refresh_secret as string, { expiresIn: config.jwt_refresh_expires_in })
+    const accessToken = `Bearer ${jwt.sign(jwtPayload, config.jwt_access_secret as string, { expiresIn: config.jwt_access_expires_in })}`
+    const refreshToken = `Bearer ${jwt.sign(jwtPayload, config.jwt_refresh_secret as string, { expiresIn: config.jwt_refresh_expires_in })}`
 
     return {
-        result,
+        userData,
         accessToken,
         refreshToken
     };
-};
+}
 
 /**
  * Get all user json data from DB
@@ -72,6 +88,7 @@ const updateUserInDB = async (id: string, updatedData: IUser): Promise<IUser | n
 
 export const UserService = {
     createUserIntoDB,
+    userLogInService,
     getAllUserFromDB,
     getSingleUserFromDBById,
     getSingleUserFromDBByEmail,

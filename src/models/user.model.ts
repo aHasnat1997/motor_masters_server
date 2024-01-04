@@ -1,6 +1,8 @@
 import { Schema, model } from "mongoose";
-import { IUser, IUserName } from "../interfaces/user.interface";
+import { IUser, IUserMethods, IUserName } from "../interfaces/user.interface";
 import { isEmail, isCharacterString } from "../utils/validation";
+import bcrypt from 'bcrypt';
+import config from "../config";
 
 // user name schema
 const userNameSchema = new Schema<IUserName>({
@@ -25,7 +27,7 @@ const userNameSchema = new Schema<IUserName>({
 })
 
 // user schema
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema<IUser, IUserMethods>({
     name: { type: userNameSchema, required: [true, 'User name is required'] },
     email: {
         type: String,
@@ -36,6 +38,10 @@ const userSchema = new Schema<IUser>({
             validator: (v: string) => isEmail(v),
             message: value => `${value.value} is not a valid Email`
         }
+    },
+    password: {
+        type: String,
+        required: [true, 'User password is required']
     },
     dateOfBarth: {
         type: String,
@@ -73,7 +79,25 @@ const userSchema = new Schema<IUser>({
         type: Boolean,
         default: false
     }
+});
+
+// user password hashed
+userSchema.pre('save', async function (next) {
+    this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt));
+    next();
 })
 
+// clear response json
+userSchema.methods.toJSON = function () {
+    const userJSON = this.toObject();
+    const deleteFields = ['isActive', 'isDeleted', '__v', 'password'];
+    deleteFields.forEach(d => delete userJSON[d]);
+    return userJSON
+};
+
+userSchema.static('userPasswordMatch', async function userPasswordMatch(plainPass: string, hashedPass: string) {
+    return await bcrypt.compare(plainPass, hashedPass);
+});
+
 // user model
-export const UserModel = model<IUser>('user', userSchema);
+export const UserModel = model<IUser, IUserMethods>('user', userSchema);
