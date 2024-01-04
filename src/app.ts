@@ -1,6 +1,5 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-import path from 'path';
 import { AppRoutes } from './route';
 import cookieParser from 'cookie-parser';
 
@@ -17,7 +16,10 @@ app.use('/api/v1', AppRoutes);
 
 // home route
 app.get('/', (req: Request, res: Response) => {
-    res.sendFile(path.join(__dirname, '../view/index.html'))
+    res.status(200).json({
+        success: true,
+        message: 'server is working...😉'
+    })
 });
 
 export default app;
