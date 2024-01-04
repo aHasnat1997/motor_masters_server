@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { IUser, IUserName } from "../interfaces/user.interface";
+import { IUser, IUserMethods, IUserName } from "../interfaces/user.interface";
 import { isEmail, isCharacterString } from "../utils/validation";
 import bcrypt from 'bcrypt';
 import config from "../config";
@@ -27,7 +27,7 @@ const userNameSchema = new Schema<IUserName>({
 })
 
 // user schema
-const userSchema = new Schema<IUser>({
+const userSchema = new Schema<IUser, IUserMethods>({
     name: { type: userNameSchema, required: [true, 'User name is required'] },
     email: {
         type: String,
@@ -95,5 +95,9 @@ userSchema.methods.toJSON = function () {
     return userJSON
 };
 
+userSchema.static('userPasswordMatch', async function userPasswordMatch(plainPass: string, hashedPass: string) {
+    return await bcrypt.compare(plainPass, hashedPass);
+});
+
 // user model
-export const UserModel = model<IUser>('user', userSchema);
+export const UserModel = model<IUser, IUserMethods>('user', userSchema);
