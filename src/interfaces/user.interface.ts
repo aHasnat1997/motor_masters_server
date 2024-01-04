@@ -1,3 +1,5 @@
+import { Model } from "mongoose"
+
 // user name interface
 export interface IUserName {
     firstName: string,
@@ -8,10 +10,21 @@ export interface IUserName {
 export interface IUser {
     name: IUserName,
     email: string,
-    phone?: string,
+    password: string,
+    phone: string,
     photo?: string,
     gender: 'male' | 'female' | 'other',
     dateOfBarth: string,
     role: 'admin' | 'user',
-    isActive: boolean
+    isActive?: boolean,
+    isDeleted?: boolean
+}
+
+export interface IUserMethods extends Model<IUser> {
+    userPasswordMatch(plainPass: string, hashedPass: string): boolean
+}
+
+export interface IUserLogIn {
+    email: string,
+    password: string
 }

@@ -10,7 +10,6 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
         const data = req.body;
         const result = await UserService.createUserIntoDB(data);
-
         res.status(200).json({
             status: 'success',
             massage: 'User created successfully',
@@ -19,6 +18,33 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
     } catch (error) {
         console.log(error);
         res.status(400).json({
+            status: 'failed',
+            massage: error
+        });
+    }
+}
+
+/**
+ * Controller for creating single user
+ * @param req API Request
+ * @param res API Response
+ */
+const logInUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const data = req.body;
+        const result = await UserService.userLogInService(data);
+
+        res.cookie('refreshToken', result.refreshToken, { httpOnly: true });
+        res.cookie('accessToken', result.accessToken, { httpOnly: true });
+
+        res.status(200).json({
+            status: 'success',
+            massage: 'User log-in successfully',
+            doc: result?.userData
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(403).json({
             status: 'failed',
             massage: error
         });
@@ -124,6 +150,7 @@ const updateSingleUser = async (req: Request, res: Response): Promise<void> => {
 
 export const UserController = {
     createUser,
+    logInUser,
     getAllUser,
     getSingleUserId,
     getSingleUserEmail,
